@@ -3,6 +3,7 @@
 const CARROT_SIZE = 80;
 const CARROT_COUNT = 5;
 const BUG_COUNT = 10;
+const GAME_DURATION_SEC = 60;
 
 const field = document.querySelector(".game__field");
 const fieldRect = field.getBoundingClientRect();
@@ -14,7 +15,6 @@ let started = false;
 let score = 0;
 let timer = undefined;
 
-// 게임 시작
 gameBtn.addEventListener("click", () => {
   if (started) {
     stopGame();
@@ -24,10 +24,12 @@ gameBtn.addEventListener("click", () => {
   started = !started;
 });
 
+// 게임 시작
 function startGame() {
   initGame();
   showStopButton();
   showTimerAndScore();
+  startGameTimer();
 }
 
 function stopGame() {}
@@ -41,6 +43,25 @@ function showStopButton() {
 function showTimerAndScore() {
   gameTimer.style.visibility = "visible";
   gameScore.style.visibility = "visible";
+}
+
+// 게임 타이머 시작
+function startGameTimer() {
+  let remainingTimeSec = GAME_DURATION_SEC;
+  updateTimerText(remainingTimeSec);
+  timer = setInterval(() => {
+    if (remainingTimeSec <= 0) {
+      clearInterval(timer);
+      return;
+    }
+    updateTimerText(--remainingTimeSec);
+  }, 1000);
+}
+
+function updateTimerText(time) {
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+  gameTimer.innerText = `${minutes}:${seconds}`;
 }
 
 // 벌레와 당근을 생성한 후 field에 추가
